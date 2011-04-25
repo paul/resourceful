@@ -18,27 +18,47 @@ describe Resourceful::UrlencodedFormData do
     end
   end
 
-  describe "with simple parameters" do
-    it "should all simple parameters to be added" do
-      @form_data.add(:foo, "testing")
-    end
+  it "should allow simple parameters to be added" do 
+    @form_data.add(:foo, "testing")
+  end
 
-    it "should render a multipart form-data document when #read is called" do
+  describe "with multiple items" do 
+    before do 
       @form_data.add('foo', 'bar')
       @form_data.add('baz', 'this')
+    end
 
+    it "should render itself correctly" do 
       @form_data.read.should eql("foo=bar&baz=this")
     end
 
-    it "should escape character in values that are unsafe" do
-      @form_data.add('foo', 'this & that')
+    it "should be rewindable" do 
+      first = @form_data.read
+      @form_data.rewind
+      
+      @form_data.read.should eql(first)
+    end    
+  end
 
-      @form_data.read.should eql("foo=this+%26+that")
+  describe "with unsafe characters in name" do 
+    before do 
+      @form_data.add('foo=bar', 'this')
     end
 
-    it "should escape character in names that are unsafe" do
-      @form_data.add('foo=bar', 'this')
+    it "should render itself correctly" do 
       @form_data.read.should eql("foo%3Dbar=this")
     end
   end
+
+
+  describe "with unsafe characters in value" do 
+    before do 
+      @form_data.add('foo', 'this & that')
+    end
+
+    it "should render itself correctly" do 
+      @form_data.read.should eql("foo=this+%26+that")
+    end
+  end
+
 end

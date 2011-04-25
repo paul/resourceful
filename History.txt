@@ -1,3 +1,7 @@
+Version NEXT
+============
+ * Fixed bug with using form data representations with authentication.
+
 Version 1.0.0
 ============
  * Added .request() convenience method to Resourceful module.

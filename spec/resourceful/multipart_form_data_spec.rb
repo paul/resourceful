@@ -16,17 +16,17 @@ describe Resourceful::MultipartFormData do
     @form_data.content_type.should match(/; boundary=[0-9A-Za-z]{10,}/i)
   end
 
+  it "should allow simple parameters to be added" do 
+    @form_data.add(:foo, "testing")
+  end
 
-  describe "with simple parameters" do
-
-    it "should all simple parameters to be added" do
-      @form_data.add(:foo, "testing")
-    end
-
-    it "should render a multipart form-data document when #read is called" do
+  describe "with multiple simple parameters" do 
+    before do 
       @form_data.add('foo', 'bar')
       @form_data.add('baz', 'this')
+    end
 
+    it "should render a multipart form-data document when #read is called" do 
       boundary = /boundary=(\w+)/.match(@form_data.content_type)[1]
       @form_data.read.should eql(<<MPFD[0..-2])
 --#{boundary}\r
@@ -39,39 +39,46 @@ Content-Disposition: form-data; name="baz"\r
 this\r
 --#{boundary}--
 MPFD
-
     end
 
-    describe "with file parameter" do
-      it "should add file parameters to be added" do
-        Tempfile.open('resourceful-post-file-tests') do |file_to_upload|
-          file_to_upload << "This is a test"
-          file_to_upload.flush
+    it "should be rewindable" do 
+      first_read = @form_data.read
+      @form_data.rewind
+      @form_data.read.should eql(first_read)
+    end
 
-          @form_data.add_file(:foo, file_to_upload.path)
-        end
+    it "should add file parameters to be added" do 
+      Tempfile.open('resourceful-post-file-tests') do |file_to_upload|
+        file_to_upload << "This is a test"
+        file_to_upload.flush
+        
+        @form_data.add_file(:foo, file_to_upload.path)
       end
+    end
+  end
 
-      it "should render a multipart form-data document when #read is called" do
-        Tempfile.open('resourceful-post-file-tests') do |file_to_upload|
-          file_to_upload << "This is a test"
-          file_to_upload.flush
+  describe "with file parameter" do 
+    before do 
+      @file_to_upload = Tempfile.new('resourceful-post-file-tests')
+      @file_to_upload << "This is a test"
+      @file_to_upload.flush
+        
+      @form_data.add_file(:foo, @file_to_upload.path)
+    end
 
-          @form_data.add_file(:foo, file_to_upload.path)
-
-          boundary = /boundary=(\w+)/.match(@form_data.content_type)[1]
-          @form_data.read.should eql(<<MPFD[0..-2])
+    it "should render a multipart form-data document when #read is called" do 
+      boundary = /boundary=(\w+)/.match(@form_data.content_type)[1]
+      @form_data.read.should eql(<<MPFD[0..-2])
 --#{boundary}\r
-Content-Disposition: form-data; name="foo"; filename="#{File.basename(file_to_upload.path)}"\r
+Content-Disposition: form-data; name="foo"; filename="#{File.basename(@file_to_upload.path)}"\r
 Content-Type: application/octet-stream\r
 \r
 This is a test\r
 --#{boundary}--
 MPFD
 
-        end
-
-      end
     end
+      
   end
 end
+

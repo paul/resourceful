@@ -18,7 +18,7 @@ module Resourceful
     # @param [Symbol] http_method
     #   :get, :put, :post, :delete or :head
     # @param [Resourceful::Resource] resource
-    # @param [String] body
+    # @param [#read, #rewind] body
     # @param [Resourceful::Header, Hash] header
     def initialize(http_method, resource, body = nil, header = nil)
       @method, @resource, @body = http_method, resource, body
