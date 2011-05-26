@@ -15,6 +15,7 @@ module Resourceful
   autoload :MultipartFormData, 'resourceful/multipart_form_data'
   autoload :UrlencodedFormData, 'resourceful/urlencoded_form_data'
   autoload :StubbedResourceProxy, 'resourceful/stubbed_resource_proxy'
+  autoload :PromiscuousBasicAuthenticator, 'resourceful/promiscuous_basic_authenticator'
 
   extend Simple
 end

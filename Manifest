@@ -6,6 +6,7 @@ Rakefile
 lib/resourceful.rb
 lib/resourceful/abstract_form_data.rb
 lib/resourceful/authentication_manager.rb
+lib/resourceful/promiscuous_basic_authenticator.rb
 lib/resourceful/cache_manager.rb
 lib/resourceful/exceptions.rb
 lib/resourceful/header.rb

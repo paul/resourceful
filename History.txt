@@ -1,6 +1,8 @@
 Version NEXT
 ============
  * Fixed bug with using form data representations with authentication.
+ * Added PromiscuousBasicAuthenticator to support basic authentication
+   with servers that do not return challenge headers.
 
 Version 1.0.0
 ============

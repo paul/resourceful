@@ -27,7 +27,7 @@ module Resourceful
 
   end
 
-  class BasicAuthenticator
+  class BasicAuthenticator 
 
     def initialize(realm, username, password)
       @realm, @username, @password = realm, username, password
@@ -57,7 +57,6 @@ module Resourceful
     def credentials
       HTTPAuth::Basic.pack_authorization(@username, @password)
     end
-
   end
 
   class DigestAuthenticator
