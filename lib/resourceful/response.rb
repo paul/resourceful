@@ -53,6 +53,7 @@ module Resourceful
         @cacheable = false if header.cache_control && header.cache_control.include?('no-cache')
         @cacheable = true  if header.cache_control && header.cache_control.include?('public')
         @cacheable = true  if header.cache_control && header.cache_control.include?('private')
+        @cacheable = false if header.expires && header.expires.to_i < 0
         @cacheable || false
       end
     end
@@ -61,7 +62,7 @@ module Resourceful
     def must_be_revalidated?
       header.cache_control && header.cache_control.include?('must-revalidate')
     end
-    
+
     # Update our headers from a later 304 response
     def revalidate!(not_modified_response)
       header.merge!(not_modified_response.header)
@@ -96,7 +97,7 @@ module Resourceful
         header.delete('Content-Encoding')
         @body
       else
-        raise UnsupportedContentCoding, "Resourceful does not support #{encoding} content coding" 
+        raise UnsupportedContentCoding, "Resourceful does not support #{encoding} content coding"
       end
     end
 
@@ -217,5 +218,5 @@ module Resourceful
     end
 
   end
-  
+
 end

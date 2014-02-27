@@ -76,7 +76,9 @@ module Resourceful
     # Should we look for a response to this request in the cache?
     def skip_cache?
       return true unless method.in? CACHEABLE_METHODS
-      header.cache_control && header.cache_control.include?('no-cache')
+      return false unless header.cache_control   # no cache control header field means we can cache it
+
+      header.cache_control.include?('no-cache') || header.cache_control.include?('max-age=0')
     end
 
     # The cached response
